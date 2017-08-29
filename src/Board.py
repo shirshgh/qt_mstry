@@ -1,10 +1,6 @@
 __author__ = 'rmozes1'
-
-
-# Tic Tac Toe
-
 import sys
-
+import numpy as np
 
 class Status:
     INVALID_MOVE = -1
@@ -21,7 +17,10 @@ class TTTBoard:
         self.next_player = 1
 
     def get(self):
-        return self.board
+        return np.reshape(np.array(self.board),(1,self.cols*self.rows))
+
+    def reset(self):
+          self.board = [[0 for i in range(self.rows)] for j in range(self.cols)]
 
     def get_new_player(self):
         self.next_player += 1
@@ -86,8 +85,21 @@ class TTTBoard:
                     return False
         return True
 
-    def play(self, player, pos_x, pos_y):
+    def play_random(self,player):
 
+        pos = np.random.randint(self.cols*self.rows)
+        pos_x = int(pos % self.cols)
+        pos_y = int(pos / self.cols)
+        while self.board[pos_y][pos_x] != 0:
+            pos = np.random.randint(self.cols*self.rows)
+            pos_x = int(pos % self.cols)
+            pos_y = int(pos / self.cols)
+
+        return self.play(player,pos)
+    def play(self, player, pos):
+
+        pos_x = int(pos % self.cols)
+        pos_y = int(pos / self.cols)
         if self.board[pos_y][pos_x] != 0:
             return Status.INVALID_MOVE
 
