@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 transition = namedtuple('transition',
                         ('state', 'action', 'reward', 'next_state', 'done'))
 

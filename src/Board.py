@@ -119,27 +119,3 @@ class TTTBoard:
             for j in range(self.cols):
                 sys.stdout.write('----')
             sys.stdout.write('\n')
-#main
-board = TTTBoard(6, 6, 5)
-
-board.draw()
-ss = board.play('x', 5, 5)
-print ss
-ss = board.play('x', 3, 5)
-print ss
-ss = board.play('x', 2, 5)
-print ss
-ss = board.play('x', 4, 5)
-print ss
-
-ss = board.play('x', 1, 5)
-print ss
-
-board.draw()
-
-exit(ss)
-
-
-
-
-
