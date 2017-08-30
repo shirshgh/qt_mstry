@@ -3,10 +3,10 @@ import sys
 import numpy as np
 
 class Status:
-    INVALID_MOVE = -1
+    INVALID_MOVE = -5
     SUCCESS = 0
     WIN = 1
-    GAME_OVER = 2
+    LOSE = -1
 
 class TTTBoard:
     def __init__(self, cols=5, rows=5, seq_size=4):
