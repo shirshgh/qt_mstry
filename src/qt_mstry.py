@@ -7,7 +7,7 @@ import functools
 import operator
 import time
 
-from Board import TTTBoard,Status
+from board import TTTBoard,Status
 from agent import Agent
 from replay_memory import replay_memory
 
