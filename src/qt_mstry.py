@@ -3,7 +3,7 @@ import argparse
 import shutil
 import numpy as np
 
-from Board import TTTBoard,Status
+from board import TTTBoard,Status
 from agent import Agent
 from replay_memory import replay_memory
 
