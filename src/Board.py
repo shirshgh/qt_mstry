@@ -3,8 +3,8 @@ import sys
 import numpy as np
 
 class Status:
-    INVALID_MOVE = -5
-    SUCCESS = 0
+    INVALID_MOVE = -1
+    SUCCESS = 0.1
     WIN = 1
     LOSE = -1
 
@@ -18,6 +18,9 @@ class TTTBoard:
 
     def get(self):
         return np.reshape(np.array(self.board),(1,self.cols*self.rows))
+    
+    def set(self,state):
+        self.board = [[state[0],state[1],state[2]],[state[3],state[4],state[5]],[state[6],state[7],state[8]]]
 
     def reset(self):
           self.board = [[0 for i in range(self.rows)] for j in range(self.cols)]
@@ -95,7 +98,8 @@ class TTTBoard:
             pos_x = int(pos % self.cols)
             pos_y = int(pos / self.cols)
 
-        return self.play(player,pos)
+        return pos,self.play(player,pos)
+
     def play(self, player, pos):
 
         pos_x = int(pos % self.cols)
@@ -108,9 +112,6 @@ class TTTBoard:
         if (self.win_row(player, pos_x, pos_y) or self.win_col(player, pos_x, pos_y) or
                 self.win_diagonal(player, pos_x, pos_y) or self.win_reversed_diagonal(player, pos_x, pos_y)):
             return Status.WIN
-
-        if self.game_over():
-            return Status.GAME_OVER
 
         return Status.SUCCESS
 

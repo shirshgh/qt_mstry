@@ -1,4 +1,6 @@
 from collections import namedtuple
+from collections import deque
+
 import random
 
 transition = namedtuple('transition',
@@ -8,7 +10,7 @@ class replay_memory():
 
 	def __init__(self, capacity):
 		self.capacity = capacity
-		self.memory = []
+		self.memory = []#deque(maxlen=capacity)
 		self.position = 0
 
 	def push(self, *args):
@@ -17,7 +19,7 @@ class replay_memory():
 			self.memory.append(None)
 		self.memory[self.position] = transition(*args)
 		self.position = (self.position + 1) % self.capacity
-
+		
 	def sample(self, batch_size):
 		return random.sample(self.memory, batch_size)
 
