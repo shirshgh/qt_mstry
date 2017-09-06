@@ -26,18 +26,27 @@ class Agent:
 		self.opt_step  		= self.opt.minimize(self.loss)
 		self.predict_play	= tf.argmax(self.dqn,axis=1)
 		self.max_Q			= tf.reduce_max(self.dqn)
-		self.count = 0
+		self.iter_count		= -1
+
+		self.epslion = 1.0
+		self.epslion_decay = 0.999985
 
 	def play(self,sess,state):
 
-		if np.random.rand() <= 0.5:
-			move = random.choice((np.where(state[0] == 0)[0]))
+		if np.random.rand() <= self.epslion:
+			if np.random.rand() <= 0.5:
+				move = random.choice((np.where(state[0] == 0)[0]))
+			else:
+				move = random.randint(0,self.n**2-1)
 		else:
-			move = random.randint(0,self.n**2-1)
+			move = sess.run(self.predict_play,feed_dict = {self.input:state})[0]
+
+		self.epslion = self.epslion * self.epslion_decay
 		return move
 
 	def replay(self,sess,batch):
 
+		self.iter_count = self.iter_count + 1
 		for i,sample in enumerate(batch):
 			state, action, reward, next_state, done  = sample
 			if done:
@@ -51,7 +60,7 @@ class Agent:
 
 	def dqn_ttt(self):
 
-		with tf.name_scope(str(self.name)):
+		with tf.name_scope("Player_"+str(self.name)):
 			
 			w_std = 0.1
 			b_std = 0.01
