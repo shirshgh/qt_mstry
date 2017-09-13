@@ -1,6 +1,7 @@
 from collections import namedtuple
 from collections import deque
-
+from board import Status
+from board import TTTBoard
 import random
 
 transition = namedtuple('transition',
@@ -15,7 +16,6 @@ class replay_memory():
 		self.position = 0
 
 	def push(self, *args):
-		"""Saves a transition."""
 
 		hash = self.calc_tuple_hash(*args)
 		if (hash in self.hashes):
@@ -47,3 +47,20 @@ class replay_memory():
 	def printall(self):
 		for m in self.memory:
 			print(m)
+
+	def print_stats(self):
+		counter1 = counter2 = counter3 = counter4 = 0
+		for m in self.memory:
+			if (m.reward == Status.SUCCESS):
+				counter1 = counter1 + 1
+			if (m.reward == Status.LOSE):
+				counter2 = counter2 + 1
+			if (m.reward == Status.WIN):
+				counter3 = counter3 + 1
+			if (m.reward == Status.INVALID_MOVE):
+				counter4 = counter4 + 1
+				
+		print("SUCCESS      : " + str(counter1))
+		print("LOSE         : " + str(counter2))
+		print("WIN          : " + str(counter3))
+		print("INVALID_MOVE : " + str(counter4))

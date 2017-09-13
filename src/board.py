@@ -3,7 +3,7 @@ import sys
 import numpy as np
 
 class Status:
-	INVALID_MOVE = -1
+	INVALID_MOVE = -1.01
 	SUCCESS = 0.1
 	WIN = 1
 	LOSE = -1
@@ -105,7 +105,6 @@ class TTTBoard:
 		pos_x = int(pos % self.cols)
 		pos_y = int(pos / self.cols)
 		if self.board[pos_y][pos_x] != 0:
-		   # print("INVALID  " + str(self.board[pos_y][pos_x]))
 			return Status.INVALID_MOVE
 
 		self.board[pos_y][pos_x] = player

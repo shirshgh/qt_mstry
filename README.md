@@ -7,3 +7,8 @@ Where NXN is the board/grid dimensions K is critera of horizontal, vertical, or 
 Example:
 •	N = 3 k = 3
 •	N = 5 k = 4
+
+Requirements:
+
+TensorFlow 1.3
+numpy
