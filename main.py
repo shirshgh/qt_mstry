@@ -2,31 +2,19 @@ import tensorflow as tf
 import argparse
 import numpy as np
 import os
-import functools
-import operator
 import time
 import matplotlib.pyplot as plt
 
 from board import TTTBoard,Status
 from agent import DQNAgent,RandomAgent,HumanAgent
 
-model_path =  '../data/my-model'
+model_dir = 'data'
+model_name = 'my-model'
+model_path = os.path.join(model_dir,model_name)
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 X_player = 1
 O_Player = -1
-
-def print_var_list(var_list):
-
-	total = 0
-	for i in var_list:
-		if (len(i.get_shape().as_list())) == 0:
-			num_param_in_var = 1
-		else:
-			num_param_in_var = functools.reduce(operator.mul,i.get_shape().as_list())
-		strr = i.name + "\tParams: " + str(num_param_in_var)
-		print(strr)
-		total = total + num_param_in_var
-	print("Total parameters: " + str(total))
 
 def test(players,sess,board,args):
 
@@ -58,6 +46,7 @@ def test(players,sess,board,args):
 
 def load_and_play(board,players,args):
 
+	print("Play!")
 	saver = tf.train.Saver()
 	with tf.Session() as sess:
 		saver.restore(sess,model_path)
@@ -112,6 +101,9 @@ def replay(p1,p2,sess,board,args):
 	for i in range(args.replay_iter):
 		p1.replay(sess,p1.sample_memory(args.batch_size))
 		p2.replay(sess,p2.sample_memory(args.batch_size))
+
+	if not (os.path.isdir(model_dir)):
+		os.makedirs(model_dir)
 	saver.save(sess, model_path)
 
 def plot_graph(stats):
@@ -141,15 +133,11 @@ def main(args):
 	X_Random = RandomAgent(X_player ,args)
 	O_Random = RandomAgent(O_Player ,args)
 
-	if (args.print_vars):
-		print_var_list(tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES))
-
 	board = TTTBoard(args.n,args.n,args.k)
-	p1 = X_DQN 
+	p1 = X_DQN
 	p2 = O_Random
 
 	if (args.load):
-		print("Play!")
 		load_and_play(board,[X_DQN,O_Human],args)
 		return
 
@@ -167,21 +155,22 @@ def main(args):
 			stats.append(test([p1,p2],sess,board,args))
 			end = time.time()
 			print("Episode " + str(i+1) + 
-				  "\treplay memory length " +  str(mem_length) + 
-				  "\treplay iter: " + str(p1.iter_count) + 
-				  "\tX Winning rate " + "%.2f" % (stats[-1][0]) + 
+				  "\treplay memory length " +  str(mem_length) +
+				  "\treplay iter: " + str(p1.iter_count) +
+				  "\tX Winning rate " + "%.3f" % (stats[-1][0]) +
 				  "\tTime: " + "%.2f" % (end-start))
 
 	if (args.plot_graph):
 		plot_graph(stats)
 
+	load_and_play(board,[X_DQN,O_Human],args)
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--n',				'-n',	type=int,				default=3,		help='Board size')
 	parser.add_argument('--k',				'-k',	type=int,				default=3,		help='winning row')
 	parser.add_argument('--hidden_1',		'-h1',	type=int,				default=64,		help='hidden_layer 1')
-	parser.add_argument('--replay_memory',	'-r',	type=int,				default=10000,	help='memory capacity')
+	parser.add_argument('--replay_memory',	'-r',	type=int,				default=15000,	help='memory capacity')
 	parser.add_argument('--batch_size',		'-b',	type=int,				default=64,		help='batch size')
 	parser.add_argument('--observe_rounds',			type=int,				default=500,	help='observation rounds')
 	parser.add_argument('--replay_iter',			type=int,				default=100,	help='replay from memory iterations')
@@ -190,9 +179,8 @@ if __name__ == "__main__":
 	parser.add_argument('--epsilon_decay',			type=float,				default=0.99995,help='epsilon_decay')
 	parser.add_argument('--min_epsilon',			type=float,				default=0.2,	help='min_epsilon')
 	parser.add_argument('--lr',				'-l',	type=float,				default=0.001,	help='learning rate')
-	parser.add_argument('--episodes',				type=int,				default=20,		help='observe/replay episodes')
-	parser.add_argument('--print_vars',				action='store_true',	default=False,	help='print the TensorFlow variables')
-	parser.add_argument('--plot_graph',				action='store_true',	default=False,	help='print the TensorFlow variables')
-	parser.add_argument('--load',					action='store_true',	default=False,	help='print the TensorFlow variables')
+	parser.add_argument('--episodes',				type=int,				default=15,		help='observe/replay episodes')
+	parser.add_argument('--plot_graph',				action='store_true',	default=False,	help='plot performance for X player')
+	parser.add_argument('--load',					action='store_true',	default=False,	help='only load model and play')
 	args = parser.parse_args()
 	main(args)

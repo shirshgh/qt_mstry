@@ -91,9 +91,10 @@ class DQNAgent(Agent):
 
 	def dqn_ttt(self):
 
+		init = tf.truncated_normal_initializer(stddev=0.5)
 		with tf.variable_scope("Player_"+str(self.name)):
-			dqn = tf.layers.dense(self.input,self.hidden_1,activation=tf.nn.relu,name="FC1")
-			dqn = tf.layers.dense(dqn       ,self.nn	  ,activation=None      ,name="out")			
+			dqn = tf.layers.dense(self.input,self.hidden_1,activation=tf.nn.relu, kernel_initializer = init, name="FC1")
+			dqn = tf.layers.dense(dqn       ,self.nn	  ,activation=None      , kernel_initializer = init, name="out")
 		return dqn
 
 class RandomAgent(Agent):
